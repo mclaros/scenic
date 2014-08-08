@@ -21,17 +21,22 @@ module Scenic
         end
       end
 
-      describe "views" do
-        it "finds views and builds Scenic::View objects" do
-          ActiveRecord::Base.connection.execute "CREATE VIEW greetings AS SELECT text 'hi' AS greeting"
+      it "finds regular and materialized views and builds Scenic::View objects" do
+        ActiveRecord::Base.connection.execute "CREATE VIEW greetings AS SELECT text 'hi' AS greeting"
+        ActiveRecord::Base.connection.execute "CREATE MATERIALIZED VIEW farewells AS SELECT text 'bye' AS farewell"
 
-          expect(Postgres.views).to eq([
-            View.new(
-              "viewname" => "greetings",
-              "definition" => "SELECT 'hi'::text AS greeting;",
-            ),
-          ])
-        end
+        expect(Postgres.views).to eq([
+          Scenic::View.new(
+            "viewname" => "farewells",
+            "definition" => " SELECT 'bye'::text AS farewell;",
+            "materialized" => "t"
+          ),
+          Scenic::View.new(
+            "viewname" => "greetings",
+            "definition" => " SELECT 'hi'::text AS greeting;",
+            "materialized" => "f"
+          ),
+        ])
       end
     end
   end

@@ -3,9 +3,14 @@ module Scenic
     module Postgres
       def self.views
         execute(<<-SQL).map { |result| Scenic::View.new(result) }
-          SELECT viewname, definition
+          SELECT viewname, definition, FALSE AS materialized
           FROM pg_views
           WHERE schemaname = ANY (current_schemas(false))
+          UNION
+          SELECT matviewname AS viewname, definition, TRUE AS materialized
+          FROM pg_matviews
+          WHERE schemaname = ANY (current_schemas(false))
+          ORDER BY viewname
         SQL
       end
 
