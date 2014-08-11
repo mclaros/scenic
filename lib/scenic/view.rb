@@ -16,8 +16,10 @@ module Scenic
     end
 
     def to_schema
+      materialized_option = materialized ? "materialized: true, " : ""
+
       <<-DEFINITION.strip_heredoc
-        create_view :#{name}, #{ "materialized: true, " if materialized }sql_definition:<<-\SQL
+        create_view :#{name}, #{materialized_option}sql_definition:<<-\SQL
           #{definition}
         SQL
       DEFINITION
