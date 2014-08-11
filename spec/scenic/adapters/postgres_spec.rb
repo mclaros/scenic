@@ -13,7 +13,10 @@ module Scenic
 
       describe "create_materialized_view" do
         it "successfully creates a materialized view" do
-          Postgres.create_materialized_view("greetings", "SELECT text 'hi' AS greeting")
+          Postgres.create_materialized_view(
+            "greetings",
+            "SELECT text 'hi' AS greeting"
+          )
 
           view = Postgres.views.first
           expect(view.name).to eq("greetings")
@@ -44,9 +47,13 @@ module Scenic
         end
       end
 
-      it "finds regular and materialized views and builds Scenic::View objects" do
-        ActiveRecord::Base.connection.execute "CREATE VIEW greetings AS SELECT text 'hi' AS greeting"
-        ActiveRecord::Base.connection.execute "CREATE MATERIALIZED VIEW farewells AS SELECT text 'bye' AS farewell"
+      it "finds views and builds Scenic::View objects" do
+        ActiveRecord::Base.connection.execute(
+          "CREATE VIEW greetings AS SELECT text 'hi' AS greeting"
+        )
+        ActiveRecord::Base.connection.execute(
+          "CREATE MATERIALIZED VIEW farewells AS SELECT text 'bye' AS farewell"
+        )
 
         expect(Postgres.views).to eq([
           Scenic::View.new(
