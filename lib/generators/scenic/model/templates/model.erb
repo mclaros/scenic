@@ -1,2 +1,7 @@
 class <%= class_name %> < ActiveRecord::Base
+<%- if materialized -%>
+  def self.refresh
+    Scenic.database.refresh_materialized_view(table_name)
+  end
+<%- end -%>
 end

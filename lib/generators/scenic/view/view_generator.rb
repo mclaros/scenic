@@ -7,6 +7,18 @@ module Scenic
       include Rails::Generators::Migration
       source_root File.expand_path("../templates", __FILE__)
 
+      def split_name_and_arguments
+        args = name.split(":")
+        self.name = args.shift
+        assign_names!(self.name)
+        args.each do |arg|
+          setter = "#{arg}="
+          if respond_to?(setter)
+            send(setter, true)
+          end
+        end
+      end
+
       def create_view_definition
         create_file definition.path
       end
@@ -51,6 +63,8 @@ module Scenic
       end
 
       private
+
+      attr_accessor :materialized
 
       def version_regex
         /\A#{plural_file_name}_v(?<version>\d+)\.sql\z/
