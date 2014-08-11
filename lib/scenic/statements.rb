@@ -5,8 +5,8 @@ module Scenic
     # name - A string or symbol containing the singular name of the database
     #        view. Cannot conflict with any other view or table names.
     # version - The version number of the view. If present, will be used to find
-    #           the definition file in db/views in the form db/views/[pluralized
-    #           name]_v[2 digit zero padded version].sql.
+    #           the definition file in db/views in the form
+    #           db/views/[pluralized name]_v[2 digit zero padded version].sql.
     #           Example: db/views/searches_v02.sql.
     # sql_definition - A string containing the SQL definition of the view. If
     #                  both sql_definition and version are provided,
@@ -90,7 +90,9 @@ module Scenic
         raise ArgumentError, "version is required"
       end
 
-      drop_view(name, revert_to_version: revert_to_version, materialized: materialized)
+      drop_view name,
+        revert_to_version: revert_to_version,
+        materialized: materialized
       create_view(name, version: version, materialized: materialized)
     end
 
