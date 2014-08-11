@@ -18,8 +18,16 @@ module Scenic
         execute "CREATE VIEW #{name} AS #{sql_definition};"
       end
 
+      def self.create_materialized_view(name, sql_definition)
+        execute "CREATE MATERIALIZED VIEW #{name} AS #{sql_definition};"
+      end
+
       def self.drop_view(name)
         execute "DROP VIEW #{name};"
+      end
+
+      def self.drop_materialized_view(name)
+        execute "DROP MATERIALIZED VIEW #{name};"
       end
 
       private

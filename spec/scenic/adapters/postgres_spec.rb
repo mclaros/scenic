@@ -11,11 +11,34 @@ module Scenic
         end
       end
 
+      describe "create_materialized_view" do
+        it "successfully creates a materialized view" do
+          Postgres.create_materialized_view("greetings", "SELECT text 'hi' AS greeting")
+
+          view = Postgres.views.first
+          expect(view.name).to eq("greetings")
+          expect(view.materialized).to eq true
+        end
+      end
+
       describe "drop_view" do
         it "successfully drops a view" do
           Postgres.create_view("greetings", "SELECT text 'hi' AS greeting")
 
           Postgres.drop_view("greetings")
+
+          expect(Postgres.views.map(&:name)).not_to include("greetings")
+        end
+      end
+
+      describe "drop_materialized_view" do
+        it "successfully drops a materialized view" do
+          Postgres.create_materialized_view(
+            "greetings",
+            "SELECT text 'hi' AS greeting"
+          )
+
+          Postgres.drop_materialized_view("greetings")
 
           expect(Postgres.views.map(&:name)).not_to include("greetings")
         end
