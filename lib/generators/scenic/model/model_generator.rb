@@ -10,7 +10,8 @@ module Scenic
         args = name.split(":")
         @name_with_arguments = name
         self.name = args.shift
-        assign_names!(self.name)
+        assign_names!(name)
+
         args.each do |arg|
           setter = "#{arg}="
           if respond_to?(setter)

@@ -60,7 +60,7 @@ module Scenic
       it "removes a materialized view from the database" do
         connection.drop_view :name, materialized: true
 
-        expect(Scenic.database).to have_received(:drop_materialized_view).with(:name)
+        expect(Scenic.database).to have_received(:drop_materialized_view)
       end
     end
 
