@@ -6,19 +6,10 @@ module Scenic
     class ModelGenerator < Rails::Generators::NamedBase
       source_root File.expand_path("../templates", __FILE__)
 
-      def split_name_and_arguments
-        args = name.split(":")
-        @name_with_arguments = name
-        self.name = args.shift
-        assign_names!(name)
-
-        args.each do |arg|
-          setter = "#{arg}="
-          if respond_to?(setter)
-            send(setter, true)
-          end
-        end
-      end
+      class_option :materialized,
+        type: :boolean,
+        required: false,
+        desc: "Makes the view materialized"
 
       check_class_collision
 
@@ -27,12 +18,14 @@ module Scenic
       end
 
       def invoke_view_generator
-        invoke "scenic:view", [@name_with_arguments]
+        invoke "scenic:view", [singular_name]
       end
 
       private
 
-      attr_accessor :materialized
+      def materialized
+        options.key? :materialized
+      end
     end
   end
 end
